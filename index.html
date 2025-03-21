@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: rgb(36, 36, 36);
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .card {
+            display: inline-block;
+            width: 250px;
+            margin: 10px;
+            padding: 10px;
+            border: none    ;
+            border-radius: 10px;
+            position: relative;
+            background-color: rgba(51, 51, 51, 1);
+            color: white;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .star {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 40px;
+            cursor: pointer;
+            color: red;
+        }
+        .selected {
+            color: gold;
+        }
+        input{
+            width: 140px;
+            height: 40px;
+            border-radius: 7px;
+            border: none;
+        } 
+        select{
+            width: 99px;
+            height: 43px;
+            border-radius: 7px;
+            border: none;
+        }
+        button{
+            width: 99px;
+            height: 43px;
+            border-radius: 7px;
+            border: none;
+            background-color: rgba(217, 83, 79, 1);
+        }
+        .viki{
+            position: fixed;
+            z-index: 999;
+            left: 100px;
+            top: 260px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background-color: rgba(36, 36, 36, 0.836);
+            padding: 10px 10%;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <div class="imgdiv"> <img  style="margin: 100px 0;" src="MOVIES! (1).png" alt="" width="700px"></div>
+        
+         <div class="viki">
+            <input type="text" id="search" placeholder="Search by title...">
+            <input type="number" id="search-year" placeholder="Search by year...">
+            
+            <select id="filter">
+                <option value="all">All Categories</option>
+                <option value="Documentary">Documentary</option>
+                <option value="Music">Music</option>
+                <option value="Uncategorized">Uncategorized</option>
+            </select>
+            
+            <button onclick="sortMovies()">Sort by Title</button>
+            <button onclick="saveFavorites()">Save Favorites</button>
+         </div>
+        
+        <div id="movie-container"></div>
+        <h2>Favorites</h2>
+        <div id="favorites-container"></div>
+    </div>
+    
+    <script>
+        let math = Math.random(Math.ceil())*100
+        const movies = [
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2009,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2009,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${++math}`,
+                "imdb_rating": 7.9
+            },
+            {
+                "Title": "The Great Escape",
+                "fulltitle": "The Great Escape (1963)",
+                "movie_year": 1963,
+                "Categories": "Action|Adventure|History",
+                "summary": "Allied prisoners plan a daring escape from a German POW camp.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 8.2
+            },
+            {
+                "Title": "Mystic River",
+                "fulltitle": "Mystic River (2003)",
+                "movie_year": 2003,
+                "Categories": "Crime|Drama|Mystery",
+                "summary": "Three childhood friends are reunited by a tragic event.",
+                "ImageURL": `https://picsum.photos/200/300?random=${--math}`,
+                "imdb_rating": 7.9
+            },
+        ];
+
+        let favoriteMovies = [];
+
+        function displayMovies(list) {
+            const container = document.getElementById("movie-container");
+            container.innerHTML = "";
+            list.forEach(movie => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+               
+                
+                const star = document.createElement("span");
+                star.classList.add("star");
+                star.innerHTML = "☆";
+                star.onclick = function () {
+                    if (favoriteMovies.includes(movie)) {
+                        favoriteMovies = favoriteMovies.filter(m => m !== movie);
+                        star.innerHTML = "☆";
+                        star.classList.remove("selected");
+                    } else {
+                        favoriteMovies.push(movie);
+                        star.innerHTML = "★";
+                        star.classList.add("selected");
+                    }
+                };
+                
+                card.innerHTML = `
+                    <img src="${movie.ImageURL}" alt="${movie.Title}">
+                    <h3>${movie.Title}</h3>
+                    <p>Category: ${movie.Categories}</p>
+                    <p>Year: ${movie.movie_year}</p>
+                    <p>IMDB Rating: ${movie.imdb_rating}</p>
+                `;
+                
+                card.appendChild(star);
+                container.appendChild(card);
+
+            });
+        }
+        
+        displayMovies(movies);
+
+        function saveFavorites() {
+            const favoritesContainer = document.getElementById("favorites-container");
+            
+            favoritesContainer.innerHTML = "";
+            favoriteMovies.forEach(movie => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <img src="${movie.ImageURL}" alt="${movie.Title}">
+                    <h3>${movie.Title}</h3>
+                    <p>Category: ${movie.Categories}</p>
+                    <p>Year: ${movie.movie_year}</p>
+                    <p>IMDB Rating: ${movie.imdb_rating}</p>
+                `;
+                favoritesContainer.appendChild(card);
+            });
+        }
+
+        document.getElementById("search").addEventListener("input", function() {
+            const searchValue = this.value.toLowerCase();
+            const filtered = movies.filter(movie => movie.Title.toLowerCase().includes(searchValue));
+            displayMovies(filtered);
+        });
+
+        document.getElementById("search-year").addEventListener("input", function() {
+            const searchValue = this.value;
+            const filtered = movies.filter(movie => movie.movie_year.toString().includes(searchValue));
+            displayMovies(filtered);
+        });
+
+        document.getElementById("filter").addEventListener("change", function() {
+            const category = this.value;
+            if (category === "all") {
+                displayMovies(movies);
+            } else {
+                const filtered = movies.filter(movie => movie.Categories.includes(category));
+                displayMovies(filtered);
+            }
+        });
+
+        function sortMovies() {
+            const sorted = [...movies].sort((a, b) => a.Title.localeCompare(b.Title));
+            displayMovies(sorted);
+        }
+
+    </script>
+</body>
+</html>
